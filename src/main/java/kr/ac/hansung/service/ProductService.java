@@ -53,4 +53,18 @@ public class ProductService {
         return productRepository.findByNameContaining(keyword, pageable);
     }
 
+    @Transactional
+    public Product updateProduct(Long id, ProductDto dto){
+        // findById: DB에서 조회
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다: " + id));
+
+        // managed 엔티티 필드 변경
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
+        if(dto.getDescription() != null){
+            product.setDescription(dto.getDescription());
+        }
+        return product; // save() 불필요, 더티 체킹으로 자동 저장
+    }
 }
