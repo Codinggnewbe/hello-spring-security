@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/login", "/signup",
-                                 "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                                 "/css/**", "/js/**", "/images/**", "/favicon.ico", "/access-denied").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/products/add", "/products/*/delete", "/products/*/edit").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .userDetailsService(userDetailsService);
+            .userDetailsService(userDetailsService)
+            .exceptionHandling((exception) -> exception.accessDeniedPage("/access-denied"));
 
         return http.build();
     }
